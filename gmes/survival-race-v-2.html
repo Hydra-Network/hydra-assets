@@ -5,10 +5,12 @@
 <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
 
 
+
+
 <html lang="en-us">
-<base href="https://rawcdn.githack.com/bubbls/UGS-Assets/7b5f563061836e381c07e99a5ebae38ade037a44/survival%20race%20v2/">
-<head>
-  <meta charset="utf-8">
+  <head>
+    <base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/survival%20race%20v2/">
+ <meta charset="utf-8">
   <meta name="robots" content="noindex, nofollow">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Survival Race</title>
@@ -53,6 +55,16 @@
 <body>
   <div id="gameContainer" style="width: 1094px; height: 615px; top: 0px; left: 1px;">
     <canvas id="unity-canvas" data-pixel-art="" width="1094" height="615" style="background: linear-gradient(to right, white, white 100%, transparent 100%, transparent) center center / 100% 1rem no-repeat; width: 1094px; height: 615px; cursor: default;"></canvas>
+      <script>
+      window.fileMergerConfig = {
+        files: [
+          { name: 'yandexBrotli.wasm.unityweb', parts: 2 },
+        ],
+        basePath: 'Build/',
+        debug: true
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/merge.js"></script>
     <script src="Build/yandexBrotli.loader.js"></script>
     <script>
       let myGameInstance = null;

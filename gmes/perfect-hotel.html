@@ -1,12 +1,15 @@
+<!DOCTYPE html>
+
+
 <!-- Ultimate Game Stash file--> 
 <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
-<!-- Made by Genizy--> 
 
-<!DOCTYPE html>
+
+
 <html lang="en-us">
+  <base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/perfect-hotel/">
   <head>
     <meta charset="utf-8">
-    <base href="https://rawcdn.githack.com/genizy/braybray/24860e0e74b06bf4760fbcebc5fbce23bc1ff298/perfect-hotel/">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity WebGL Player | Perfect Hotel</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
@@ -30,12 +33,24 @@
         <div id="unity-build-title">Perfect Hotel</div>
       </div>
     </div>
+          <script>
+      window.fileMergerConfig = {
+        files: [
+          { name: 'My_Perfect_Hotel_output_v17.data.br', parts: 1 },
+          { name: 'My_Perfect_Hotel_output_v17.wasm.br', parts: 2 },
+          { name: 'My_Perfect_Hotel_output_v17.framework.js', parts: 1 },
+        ],
+        basePath: 'Build/',
+        debug: true
+      };  
+  </script>
+  <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/merge.js"></script>
     <script>
       var buildUrl = "Build";
       var loaderUrl = buildUrl + "/My_Perfect_Hotel_output_v17.loader.js";
       var config = {
         dataUrl: buildUrl + "/My_Perfect_Hotel_output_v17.data.br",
-        frameworkUrl: buildUrl + "/My_Perfect_Hotel_output_v17.framework.js.br",
+        frameworkUrl: buildUrl + "/My_Perfect_Hotel_output_v17.framework.js",
         codeUrl: buildUrl + "/My_Perfect_Hotel_output_v17.wasm.br",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "perfect",

@@ -7,13 +7,14 @@
 
 
 <html lang="en-us">
-<base href="https://rawcdn.githack.com/bubbls/UGS-Assets/f56396b3862859bcbbacd67155b7d44743783156/kart%20bros/"
+<base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/kart%20bros/">
 <head>
   <meta charset="utf-8">
   <title>KART BROS! - Free Online .io Kart Racing Game</title> 
   <link rel="shortcut icon" href="TemplateData/favicon.ico">
   <link rel="stylesheet" href="TemplateData/style.css">
   <link rel="canonical" href="https://kartbros.io/">
+  <link rel="manifest" href="manifest.json" />
   <meta name="description" content="Kart Bros is a free kart racing game that's packed with wild antics! Whether you're hugging the turns, drifting around tracks or hurling powerups with friends, Kart Bros is an io racing game that delivers non‑stop thrills in every race.">
 
   <meta property="og:title" content="Kart Bros!">
@@ -388,6 +389,12 @@
     }
   </style>
 
+  <script>
+    if (typeof navigator.serviceWorker !== 'undefined') {
+      navigator.serviceWorker.register('TemplateData/sw.js')
+    }
+  </script>
+
   <!-- AdinPlay Ads Snippet Integration -->
   <script>
     window.aiptag = window.aiptag || {
@@ -416,19 +423,47 @@
         },
         AIP_COMPLETE: function(state) {
           console.log("Video Ad Completed: " + state);
+          if (typeof SendEvent === "function") {
+            SendEvent("event", "aip_video_completed", {
+              state: state
+            });
+          }
+          if (typeof completeVideoAd === "function") {
+            completeVideoAd(false);
+          }
         }
       });
     });
+  </script>
+  <script>
+    (function() {
+      function detectMsStart() {
+        var uri = window.location.pathname + window.location.search + window.location.hash;
+        var lowerUri = (uri || '').toLowerCase();
+        var params = new URLSearchParams(window.location.search || '');
+        if (params.has('ms') || params.has('msstart_sdk_init')) {
+          return true;
+        }
+        if (lowerUri.indexOf('msstart_sdk_init') !== -1) {
+          return true;
+        }
+        return lowerUri.indexOf('ms') !== -1;
+      }
 
-    // function show_videoad() {
-    //   if (typeof aiptag.adplayer !== 'undefined') {
-    //     aiptag.cmd.player.push(function () { aiptag.adplayer.startVideoAd(); });
-    //   } else {
-    //     console.log("Ad could not be loaded, load your content here");
-    //     if (aiptag.adplayer && aiptag.adplayer.aipConfig && typeof aiptag.adplayer.aipConfig.AIP_COMPLETE === "function")
-    //       aiptag.adplayer.aipConfig.AIP_COMPLETE();
-    //   }
-    // }
+      window.isMsStart = detectMsStart();
+      if (window.isMsStart) {
+        window.msStart = true;
+        var msSdkScript = document.createElement('script');
+        msSdkScript.src = 'https://assets.msn.com/staticsb/statics/latest/msstart-games-sdk/msstart-v1.0.0-rc.19.min.js';
+        msSdkScript.async = true;
+        msSdkScript.addEventListener('load', function() {
+          if (typeof window.loadMsVideoAsync === 'function') {
+            window.loadMsVideoAsync();
+          }
+        });
+        document.head.appendChild(msSdkScript);
+      }
+    })();
   </script>
   <script async src="//api.adinplay.com/libs/aiptag/pub/SSK/kartbros.io/tag.min.js"></script>
   <!-- End AdinPlay Snippet -->
@@ -501,6 +536,147 @@
 
     updateStatus(false);
   </script>
+  <script>
+    var msVideoInstanceId = null;
+    var lastUnitPlayed = null;
+
+    function trackAdEvent(name, data) {
+      if (typeof SendEvent === "function") {
+        if (data && typeof data === "object") {
+          SendEvent("event", name, data);
+        } else {
+          SendEvent("event", name);
+        }
+      }
+    }
+
+    function focusGameCanvas() {
+      window.focus();
+      var contentElement = document.getElementById("openfl-content") || document.getElementById("unity-canvas");
+      if (contentElement && typeof contentElement.focus === "function") {
+        contentElement.focus();
+      }
+    }
+
+    function completeVideoAd(isBlocked) {
+      if (typeof window.Main !== "undefined" && typeof window.Main.DoneVideoAd === "function") {
+        try {
+          if (typeof isBlocked === "undefined") {
+            window.Main.DoneVideoAd();
+          } else {
+            window.Main.DoneVideoAd(isBlocked);
+          }
+        } catch (err) {
+          console.warn("Main.DoneVideoAd error", err);
+        }
+      }
+      focusGameCanvas();
+    }
+
+    function loadMsVideoAsync() {
+      if (!window.isMsStart || typeof window.$msstart === "undefined" || typeof window.$msstart.loadAdsAsync !== "function") {
+        msVideoInstanceId = null;
+        return;
+      }
+
+      window.$msstart.loadAdsAsync().then(function(adInstance) {
+        msVideoInstanceId = adInstance && adInstance.instanceId;
+      }).catch(function(error) {
+        console.log("MS loadAdsAsync error", error);
+        msVideoInstanceId = null;
+      });
+
+      if (typeof window.SetupMSNotification === "function") {
+        try {
+          window.SetupMSNotification();
+        } catch (notificationError) {
+          console.warn("SetupMSNotification error", notificationError);
+        }
+      }
+    }
+
+    function ShowVideo(theUnitName, forceAip) {
+      var unitName = theUnitName || "kartbros-io_preroll";
+      var forceFallback = !!forceAip;
+
+      console.log("SHOW_VIDEO", unitName, "forceAip:", forceFallback);
+
+      if (/Android|webOS|iPhone|iPad|iPod|Opera Mini/i.test(navigator.userAgent)) {
+        var prerollElement = document.getElementById("preroll");
+        if (prerollElement) {
+          prerollElement.style.display = "none";
+          prerollElement.style.visibility = "hidden";
+        }
+        completeVideoAd(false);
+        return;
+      }
+
+      if (!forceFallback && window.isMsStart && typeof window.$msstart !== "undefined" && typeof window.$msstart.showAdsAsync === "function") {
+        if (!msVideoInstanceId) {
+          console.log("MSStart ad not ready, falling back to AIP");
+          loadMsVideoAsync();
+        } else {
+          window.$msstart.showAdsAsync(msVideoInstanceId).then(function(adInstance) {
+            var completion = adInstance && adInstance.showAdsCompletedAsync;
+            if (completion && typeof completion.then === "function") {
+              completion.then(function() {
+                console.log("MS Video Ad Complete");
+                trackAdEvent("ms_video_shown2");
+                completeVideoAd(false);
+                loadMsVideoAsync();
+              }).catch(function(err) {
+                console.log("MS video not completed", err);
+                trackAdEvent("ms_video_not_completed");
+                loadMsVideoAsync();
+                ShowVideo(unitName, true);
+              });
+            } else {
+              console.log("MS video completion promise missing");
+              trackAdEvent("ms_video_shown2");
+              completeVideoAd(false);
+              loadMsVideoAsync();
+            }
+          }).catch(function(err) {
+            console.log("MS Video Ad Error, showing AIP fallback", err);
+            trackAdEvent("ms_video_show_error2");
+            loadMsVideoAsync();
+            ShowVideo(unitName, true);
+          });
+          return;
+        }
+      }
+
+      if (typeof window.aiptag === "undefined" || !window.aiptag.cmd || !window.aiptag.cmd.player) {
+        console.log("VIDEO_ADBLOCKED");
+        trackAdEvent("video_adblocked");
+        completeVideoAd(true);
+        return;
+      }
+
+      lastUnitPlayed = unitName;
+      trackAdEvent("startvideo-" + unitName);
+
+      window.aiptag.cmd.player.push(function() {
+        var player = window.aiptag.adplayer || window.adplayer;
+        if (player && typeof player.startPreRoll === "function") {
+          player.startPreRoll(unitName);
+        } else {
+          console.log("AIP adplayer missing - marking video complete");
+          trackAdEvent("video_adplayer_missing");
+          completeVideoAd(true);
+        }
+      });
+    }
+
+    function LoadVideo() {
+      loadMsVideoAsync();
+    }
+
+    window.LoadVideo = LoadVideo;
+    window.ShowVideo = ShowVideo;
+
+    loadMsVideoAsync();
+  </script>
 </head>
 
 <body>
@@ -564,14 +740,94 @@
   <!-- Information section (scrolls below game) -->
   <div class="info-section">
     <!-- Main content container -->
+    <div class="container">
+      <h1>Kart Bros: Free-to-Play Online Racing</h1>
+      <p>Kart Bros is a simple, fast‑paced kart racing game that's incredibly easy to pick up—yet packed with wild
+        antics! Whether you're hugging the turns, drifting around tracks or hurling powerups with friends, Kart Bros
+        delivers non‑stop thrills in every race.</p>
+      <p>This is a free-to-play .io racing game: No downloads required—just fire up your browser (Chrome recommended)
+        and race!</p>
+      <p>Kart Bros is still in early access and receiving ongoing updates: New features, tracks, and karts are always
+        right around the corner. Provide feedback on the discord to help us develop in the right direction!</p>
 
+      <h2>Controls</h2>
+      <ul>
+        <li><strong>Drive:</strong> Arrow keys or WASD</li>
+        <li><strong>Use Powerups:</strong> Space bar</li>
+        <li><strong>Look Back:</strong> Left Shift</li>
+      </ul>
+
+      <div class="changelog">
+        <h2>Last Changelog Update (10/20/2025) v1.44</h2>
+        <p>🛣️ TRACKS! 3 new tracks: Space, Ancient and Garden</p>
+        <p>🏎️ MORE RACERS!!! More to choose from, unlock them now </p>
+        <p>🚩 FLAGS! Personalize your kart! </p>
+        <p>🏆 NEW CUP! Can you beat Furious Racers in a grand prix? </p>
+        <p>🔓 UNLOCKS!! Better unlock progression for new players</p>
+        <p>🪲 BUG FIXES!!</p>
+      </div>
+
+      <div class="faq">
+        <h2>FAQ</h2>
+        <div class="faq-item">
+          <h3>Why isn't the game loading?</h3>
+          <p>First, check your internet connection and ensure Kart Bros isn't blocked by your network. Also, try
+            disabling any ad blockers.</p>
+        </div>
+        <div class="faq-item">
+          <h3>How do I play?</h3>
+          <p>Use the arrow keys or WASD to drive, and press the space bar to use items. It's straightforward—pick your
+            character, track, start your engines, and have fun!</p>
+        </div>
+        <div class="faq-item">
+          <h3>Which browser should I use?</h3>
+          <p>We recommend Chrome for the best experience. Kart Bros also works on Firefox and Safari, but Chrome is
+            the only browser fully supported. The game is optimized to run well in browser on all computers, from
+            school Chromebooks to the best gaming PC.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Are there more Bros games?</h3>
+          <p>Definitely! Check out <a href="https://footballbros.io" target="_blank">Football Bros</a>, <a href="https://basketbros.io" target="_blank">Basket Bros</a>, <a href="https://soccerbros.gg" target="_blank">Soccer Bros</a>, <a href="https://wrestlebros.io" target="_blank">Wrestle Bros</a>, and
+            <a href="https://baseballbros.io" target="_blank">Baseball Bros</a>. You can find additional free web
+            games at <a href="https://iogames.space" target="_blank">iogames.space</a>!
+          </p>
+        </div>
+        <div class="faq-item">
+          <h3>Do you have a favorite track or racer?</h3>
+          <p>We sure do, but we're not spilling the beans! 😉Try all 9 tracks and let us know your favorite.</p>
+        </div>
+        <div class="faq-item">
+          <h3>When is Kart Bros releasing?</h3>
+          <p>It's live right now Bro! Unlock all the content and get to the finish line first</p>
+        </div>
+        <div class="faq-item">
+          <h3>I want MORE info about the game bro!</h3>
+          <p>We highly recommend you scroll up and jump into a game, but since you asked…</p>
+
+          <h4>Single‑Player Racing</h4>
+          <p><strong>Take the lead:</strong> Start in Quick Play mode to perfect your drifting around tight corners
+            and nail those boost‑filled straights.</p>
+          <p><strong>Fire first:</strong> Earn in‑race rewards to unlock a host of weird and wonderful
+            characters—choose from your vibrant roster of drivers, each with unique stats.</p>
+          <p><strong>Tournament mode:</strong> Game for more driving? Jump into the Bro Cup to face off on three
+            back-to-back maps, racing your way to pole position and claiming the trophy.</p>
+
+          <h4>Multi‑Player Racing</h4>
+          <p><strong>Online Races:</strong> Host or Join your friends in frantic online multiplayer real‑time races
+          </p>
+          <p><strong>Chaotic Power‑Ups:</strong> Grab rockets, speed boosts, shields, and more—timing your items
+            perfectly can turn the tide of any race.</p>
+
+          <p>Get ready to rev your engines, unleash mayhem with power‑ups, and become the ultimate kart racing
+            champion—solo or online—at kartbros.io!</p>
+        </div>
+      </div>
 
       <div class="social">
         <p>To keep up to date, sign up for our email newsletter <a href="https://bluewizard.com/subscribe-to-bwd/">right
             here!</a></p>
 
         <p>Follow us on social media to stay updated with the latest news and features!</p>
-        <p>v1.33</p>
       </div>
     </div>
 
@@ -583,7 +839,7 @@
       <a href="https://twitter.com/bluewizardgames"><img src="https://zuckvmusk.com/img/twitter.png" alt="Twitter"></a>
       <a href="https://www.instagram.com/bluewizardgames/"><img src="https://zuckvmusk.com/img/instagram.png" alt="Instagram"></a>
       <a href="https://www.youtube.com/bluewizarddigital"><img src="https://zuckvmusk.com/img/youtube.png" alt="Youtube"></a>
-      <a href="/cdn-cgi/l/email-protection#a7cec9c1c8e7c5cbd2c2d0ceddc6d5c389c4c8ca"><img src="https://zuckvmusk.com/img/email.png" alt="Email"></a>
+      <a href="/cdn-cgi/l/email-protection#650c0b030a2507091000120c1f0417014b060a08"><img src="https://zuckvmusk.com/img/email.png" alt="Email"></a>
     </div>
 
     <!-- Ad containers moved out of info-section to be in global scope -->
@@ -600,41 +856,16 @@
   <!-- Scripts -->
   <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
   <script src="TemplateData/pleaserotate.min.js"></script>
-
   <script>
-    // Toggle pointer events for scrolling
-    document.addEventListener('wheel', onScroll, false);
-    document.addEventListener('mousemove', onMouse, false);
-
-    function onMouse() {
-      const gameSection = document.querySelector('.game-section');
-      if (gameSection) {
-        gameSection.style['pointer-events'] = 'auto';
-      }
-    }
-
-    function onScroll() {
-      const gameSection = document.querySelector('.game-section');
-      if (gameSection) {
-        gameSection.style['pointer-events'] = 'none';
-
-        // Re-enable pointer events after a short delay to allow for smooth scrolling
-        setTimeout(function() {
-          gameSection.style['pointer-events'] = 'auto';
-        }, 500);
-      }
-    }
-
-    // Force exit out off fullscreen mode when the device is rotated to portrait
-    window.addEventListener('orientationchange', () => {
-      if (window.screen.orientation && window.screen.orientation.type.startsWith('portrait')) {
-        if (document.fullscreenElement) {
-          document.exitFullscreen();
-        }
-      }
-    });
-
+  // Wait for DOM to be fully loaded
+  document.addEventListener('DOMContentLoaded', function() {
     let canvas = document.getElementById("unity-canvas");
+    let loadingBar = document.getElementById("unity-loading-bar");
+
+    if (!canvas || !loadingBar) {
+      console.error("Required elements not found!");
+      return;
+    }
 
     function unityShowBanner(msg, type) {
       let warningBanner = document.getElementById("unity-warning");
@@ -658,36 +889,93 @@
       updateBannerVisibility();
     }
 
+    // Split file loading function
+    async function loadSplitData(baseUrl, parts) {
+      const chunks = [];
+      let totalSize = 0;
+      
+      for (let i = 1; i <= parts; i++) {
+        try {
+          const response = await fetch(`${baseUrl}.part${i}`);
+          if (!response.ok) {
+            throw new Error(`Failed to load ${baseUrl}.part${i}`);
+          }
+          const chunk = await response.arrayBuffer();
+          chunks.push(chunk);
+          totalSize += chunk.byteLength;
+          console.log(`Loaded part ${i}/${parts} of ${baseUrl} (${chunk.byteLength} bytes)`);
+        } catch (error) {
+          console.error(`Error loading part ${i}:`, error);
+          throw error;
+        }
+      }
+
+      // Merge all chunks into a single ArrayBuffer
+      const merged = new Uint8Array(totalSize);
+      let offset = 0;
+      
+      for (const chunk of chunks) {
+        merged.set(new Uint8Array(chunk), offset);
+        offset += chunk.byteLength;
+      }
+      
+      console.log(`Merged ${parts} parts into ${totalSize} bytes`);
+      
+      const mergedBlob = new Blob([merged.buffer]);
+      return URL.createObjectURL(mergedBlob);
+    }
+
     var buildUrl = "Build";
-    var loaderUrl = buildUrl + "/6017c527e1984a3d73b0c56d1a2c6519.loader.js";
+    var loaderUrl = buildUrl + "/50aae8885f8128746acbcf303169f06d.loader.js";
     var config = {
       arguments: [],
-      dataUrl: buildUrl + "/a0ce5d132edccecbb0d5be585ec1cb9b.data.unityweb",
-      frameworkUrl: buildUrl + "/1a1fc1c709352d3e8cfea1a5ff718893.framework.js.unityweb",
-      codeUrl: buildUrl + "/61e2ebfd69b7e9566aaecd4c7e80e14e.wasm.unityweb",
+      dataUrl: buildUrl + "/8a36ffb7a14f6fd1cee9540e7a27ad5d.data.unityweb",
+      frameworkUrl: buildUrl + "/fa2ee6ed0d928fb054a06955bee03cec.framework.js.unityweb",
+      codeUrl: buildUrl + "/dddaa5fa4402a195b575e42611368142.wasm.unityweb",
       streamingAssetsUrl: "StreamingAssets",
       companyName: "BlueWizard",
       productName: "KART BROS!",
-      productVersion: "1.33",
+      productVersion: "1.43",
       showBanner: unityShowBanner,
     };
 
-    document.getElementById("unity-loading-bar").style.display = "block";
+    loadingBar.style.display = "block";
 
-    let script = document.createElement("script");
-    script.src = loaderUrl;
-    script.onload = () => {
-      createUnityInstance(canvas, config, (progress) => {
-        //document.getElementById("unity-progress-bar-full").style.width = (100 * progress) + "%";
-      }).then((unityInstance) => {
-        window.unityInstance = unityInstance;
-        document.getElementById("unity-loading-bar").style.display = "none";
-      }).catch((message) => {
-        alert(message);
-      });
-    };
-    document.body.appendChild(script);
-  </script>
+    // Load BOTH split files (adjust the number 2 to match your actual part count)
+    Promise.all([
+      loadSplitData(buildUrl + "/8a36ffb7a14f6fd1cee9540e7a27ad5d.data.unityweb", 2),
+      loadSplitData(buildUrl + "/dddaa5fa4402a195b575e42611368142.wasm.unityweb", 2)
+    ])
+    .then(([dataUrl, wasmUrl]) => {
+      config.dataUrl = dataUrl;
+      config.codeUrl = wasmUrl;
+      
+      console.log("All split files loaded and merged successfully");
+      
+      let script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          console.log(`Unity loading: ${Math.round(progress * 100)}%`);
+        }).then((unityInstance) => {
+          window.unityInstance = unityInstance;
+          loadingBar.style.display = "none";
+          
+          URL.revokeObjectURL(dataUrl);
+          URL.revokeObjectURL(wasmUrl);
+        }).catch((message) => {
+          console.error("Unity instance creation failed:", message);
+          alert(message);
+        });
+      };
+      document.body.appendChild(script);
+    })
+    .catch((error) => {
+      console.error("Failed to load split files:", error);
+      alert("Failed to load game files: " + error.message);
+    });
+  });
+</script>
 </body>
 
 </html>

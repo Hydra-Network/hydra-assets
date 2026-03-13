@@ -7270,11 +7270,6 @@
 		"thumb": "thumbs/super-mario-bros-3.avif"
 	},
 	{
-		"file_name": "super-mario-bros.-remastered.html",
-		"title": "Super Mario Bros. Remastered",
-		"thumb": "thumbs/super-mario-bros.-remastered.avif"
-	},
-	{
 		"file_name": "super-mario-kart.html",
 		"title": "Super Mario Kart",
 		"thumb": "thumbs/super-mario-kart.avif"
@@ -8265,18 +8260,18 @@
 		"thumb": "thumbs/game-inside-a-game-inside-a-game-inside-a-game-inside-a-game-inside-a-game.avif"
 	},
 	{
-		"file_name": "groon-groon,-babey!.html",
-		"title": "groon groon, babey!",
-		"thumb": "thumbs/groon-groon,-babey!.avif"
-	},
-	{
 		"file_name": "myteardrop.html",
 		"title": "myTeardrop",
 		"thumb": "thumbs/myteardrop.avif"
 	},
 	{
 		"file_name": "sandspiel.html",
-		"title": "sandspiel",
+		"title": "Sandspiel",
 		"thumb": "thumbs/sandspiel.avif"
+	},
+	{
+		"file_name": "dumb-ways-to-die.html",
+		"title": "Dumb Ways to Die",
+		"thumb": "thumbs/dumb-ways-to-die.avif"
 	}
 ]

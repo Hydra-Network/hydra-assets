@@ -1,4 +1,4 @@
-<Module>
+<!DOCTYPE html>
 
 
 <!-- Ultimate Game Stash file--> 
@@ -6,14 +6,14 @@
 
 
 
-<!DOCTYPE html>
 <html lang="en-us">
+  <base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/onebit/onebit/">
   <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity WebGL Player | OneBit Adventure</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@85dcab9025d29ef0b92c8f9d06477547f9b5931c/onebit/onebit/TemplateData/style.css">
+    <link rel="stylesheet" href="TemplateData/style.css">
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
@@ -31,6 +31,18 @@
         <div id="unity-build-title">OneBit Adventure</div>
       </div>
     </div>
+          <script>
+      window.fileMergerConfig = {
+        files: [
+          { name: '319c298f7018bac0a1d0f632e77c9799.data', parts: 2 },
+          { name: 'dda4424b5711beba81724377a723611a.wasm', parts: 2 },
+          { name: 'f14e31b82414f5f8e7ab28f7f3909ea5.js', parts: 1 },
+        ],
+        basePath: 'build/',
+        debug: true
+      };  
+      </script>
+        <script src="merge.js"></script>
     <script>
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
@@ -63,12 +75,12 @@
         updateBannerVisibility();
       }
 
-var buildUrl = "https://rawcdn.githack.com/bubbls/UGS-Assets/85dcab9025d29ef0b92c8f9d06477547f9b5931c/onebit/onebit/build";
-var loaderUrl = "https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@85dcab9025d29ef0b92c8f9d06477547f9b5931c/onebit/onebit/build/OneBit%20v1.3.203%20Browser.loader.js";
+      var buildUrl = "build";
+      var loaderUrl = buildUrl + "/OneBit v1.3.203 Browser.loader.js";
       var config = {
-        dataUrl: buildUrl + "/319c298f7018bac0a1d0f632e77c9799.data.br",
-        frameworkUrl: buildUrl + "/f14e31b82414f5f8e7ab28f7f3909ea5.js.br",
-        codeUrl: buildUrl + "/dda4424b5711beba81724377a723611a.wasm.br",
+        dataUrl: buildUrl + "/319c298f7018bac0a1d0f632e77c9799.data",
+        frameworkUrl: buildUrl + "/f14e31b82414f5f8e7ab28f7f3909ea5.js",
+        codeUrl: buildUrl + "/dda4424b5711beba81724377a723611a.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "Galactic Slice",
         productName: "OneBit Adventure",
@@ -125,4 +137,3 @@ var loaderUrl = "https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@85dcab9025d29ef0b
     </script>
   </body>
 </html>
-<script defer src="" type="text/javascript"></script>

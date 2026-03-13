@@ -5,8 +5,11 @@
 <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
 
 
+
 <html lang="en-us">
-<base href="https://rawcdn.githack.com/bubbls/UGS-Assets/689830d5073524eaf53252c5903a88d5d29e26df/mana%20god/">
+  <base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@79091a3feb921044b3597bd32cea7357b43e2d9c/mana%20god/">
+  <html lang="en-us">
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -31,6 +34,18 @@
       <div id="unity-build-title">PassTheProjectBTP</div>
     </div>
   </div>
+    <script>
+      window.fileMergerConfig = {
+        files: [
+          { name: 'WebGL.data', parts: 2 },
+          { name: 'WebGL.wasm', parts: 1 },
+          { name: 'WebGL.framework.js', parts: 1 },
+        ],
+        basePath: 'Build/',
+        debug: true
+      };  
+      </script>
+    <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@ac5cdfc0042aca584e72619375b4aca948a9243c/merge.js"></script>
   <script>
     var container = document.querySelector("#unity-container");
     var canvas = document.querySelector("#unity-canvas");

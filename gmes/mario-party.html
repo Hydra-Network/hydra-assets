@@ -1,15 +1,14 @@
-<!DOCTYPE html>
-
+<html>
 
 <!-- Ultimate Game Stash file--> 
 <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
 
 
-  <head> 
+  <head>
     <script>
       window.gameconfig = {
-        name: "Mario Party (USA)",
-        url: "https://cdn.jsdelivr.net/gh/bubbls/ugss@bedc66a398d9078f30471e9255aa188f79f9d611/Mario%20Party%20(USA)/Mario%20Party%20(USA).z64",
+        name: "Mario Party 2 (USA)",
+        url: "https://cdn.jsdelivr.net/gh/bubbls/ugss@c88fc400f04b77c4cceab3e82b81bb3999abb450/Mario%20Party%202%20(USA)/Mario%20Party%202%20(USA).z64",
         core: "n64",
         min: 1,
         max: 2,
@@ -41,12 +40,10 @@
       function getParts(file, start, end) {
         let parts = [];
         for (let i = start; i <= end; i++) {
-          let padded = String(i).padStart((end+"").length, '0');
-          parts.push(file + ".part" + padded);
+          parts.push(file + ".part" + i);
         }
         return parts;
       }
-getParts("asd.js", 0, 100)
     </script>
     <style>
       body,
@@ -111,6 +108,9 @@ getParts("asd.js", 0, 100)
           EJS_startOnLoaded = true;
           EJS_pathtodata = "https://cdn.jsdelivr.net/gh/genizy/emu@master/";
           EJS_gameUrl = gameUrl;
+          EJS_defaultOptions = {
+        vsync: "disabled"
+}
           const script = document.createElement("script");
           script.src =
             "https://cdn.jsdelivr.net/gh/genizy/emu@master/loader.js";
@@ -123,4 +123,4 @@ getParts("asd.js", 0, 100)
         });
     </script>
   </body>
-</html>  
+</html> 

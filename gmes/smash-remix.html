@@ -7,8 +7,8 @@
   <head>
     <script>
       window.gameconfig = {
-        name: "Smash_Remix_1.5.2",
-        url: "https://cdn.jsdelivr.net/gh/bubbls/ugss@113bb5fedfc48527c6cca5eb1fad5b47e73c2954/smash%20remix/Smash_Remix_1.5.2.z64",
+        name: "Smash_Remix_2.0.0",
+        url: "https://cdn.jsdelivr.net/gh/Eriorry/gamething@758ecc9065af421d0637b79295e077a83642ea61/smashremix2/Smash_Remix_2.0.0.z64",
         core: "n64",
         min: 1,
         max: 4,
@@ -108,6 +108,9 @@
           EJS_startOnLoaded = true;
           EJS_pathtodata = "https://cdn.jsdelivr.net/gh/genizy/emu@master/";
           EJS_gameUrl = gameUrl;
+          EJS_defaultOptions = {
+        vsync: "disabled"
+}
           const script = document.createElement("script");
           script.src =
             "https://cdn.jsdelivr.net/gh/genizy/emu@master/loader.js";

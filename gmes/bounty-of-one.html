@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 
+
 <!-- Ultimate Game Stash file--> 
 <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
 
 
-
-<!DOCTYPE html>
 <html lang="en-us">
   <head>
+    <base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/bounty%20of%20one/">
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity WebGL Player | BountyOfOne</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@060a07463cdd2b1007815f81088e4b74d5780d0d/bounty%20of%20one/TemplateData/style.css">
+    <link rel="stylesheet" href="TemplateData/style.css">
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
@@ -30,6 +30,18 @@
         <div id="unity-build-title">BountyOfOne</div>
       </div>
     </div>
+    <script>
+      window.fileMergerConfig = {
+        files: [
+          { name: '2022.05.25 Mons GameDevCafe.data', parts: 3 },
+          { name: '2022.05.25 Mons GameDevCafe.wasm', parts: 3 },
+          { name: '2022.05.25 Mons GameDevCafe.framework.js', parts: 1 },
+        ],
+        basePath: '',
+        debug: true
+      };  
+      </script>
+    <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@ac5cdfc0042aca584e72619375b4aca948a9243c/merge.js"></script>
     <script>
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
@@ -63,11 +75,11 @@
       }
 
       var buildUrl = "";
-      var loaderUrl = buildUrl + "https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@060a07463cdd2b1007815f81088e4b74d5780d0d/bounty%20of%20one/2022.05.25%20Mons%20GameDevCafe.loader.js";
+      var loaderUrl = "2022.05.25 Mons GameDevCafe.loader.js";
       var config = {
-        dataUrl: buildUrl + "https://rawcdn.githack.com/bubbls/UGS-Assets/060a07463cdd2b1007815f81088e4b74d5780d0d/bounty%20of%20one/2022.05.25%20Mons%20GameDevCafe.data",
-        frameworkUrl: buildUrl + "https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@060a07463cdd2b1007815f81088e4b74d5780d0d/bounty%20of%20one/2022.05.25%20Mons%20GameDevCafe.framework.js",
-        codeUrl: buildUrl + "https://rawcdn.githack.com/bubbls/UGS-Assets/060a07463cdd2b1007815f81088e4b74d5780d0d/bounty%20of%20one/2022.05.25%20Mons%20GameDevCafe.wasm",
+        dataUrl: buildUrl + "/2022.05.25 Mons GameDevCafe.data",
+        frameworkUrl: buildUrl + "2022.05.25 Mons GameDevCafe.framework.js",
+        codeUrl: buildUrl + "/2022.05.25 Mons GameDevCafe.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "OptizOnion",
         productName: "BountyOfOne",
@@ -127,3 +139,4 @@
     </script>
   </body>
 </html>
+

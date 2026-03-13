@@ -5,18 +5,32 @@
 <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
 
 
-<!DOCTYPE html>
+
+
 <html lang="en-us">
-<base href="https://rawcdn.githack.com/bubbls/UGS-Assets/72d44e5cd51216700d64b2bee29932d454a862bf/alien%20sky%20invasion/">
+<base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/alien%20sky%20invasion/">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Alien Sky Invasion - FreezeNova</title>
- 
+
   <link rel="shortcut icon" href="TemplateData/favicon.ico">
   <link rel="stylesheet" href="TemplateData/style.css">
 
   <script src="TemplateData/UnityProgress.js"></script>
+  <script>
+    window.fileMergerConfig = {
+      files: [
+        { name: 'game.data.unityweb', parts: 2 },
+        { name: 'game.asm.code.unityweb', parts: 1 },
+        { name: 'game.asm.framework.unityweb', parts: 1 },
+        { name: 'game.asm.memory.unityweb', parts: 1 },
+      ],
+      basePath: 'Build/',
+      debug: true
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/merge.js" ></script>
   <script src="Build/UnityLoader.js"></script>
 
 
@@ -26,6 +40,7 @@
     }
   </style>
 
+  <link rel="canonical" href="https://unblocked-games.s3.amazonaws.com/alien-sky-invasion.html" />
 
   <script src="/assets/scripts/game.js"></script>
 

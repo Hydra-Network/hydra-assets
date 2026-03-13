@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 
 
 <!-- Ultimate Game Stash file--> 
@@ -5,9 +6,10 @@
 
 
 
-<!DOCTYPE html>
-<html lang="en-us">
 
+
+<html lang="en-us">
+<base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/highway%20racer%202/">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -223,13 +225,25 @@
 <body>
 	<div id="gameContainer">
 		<canvas id="unity-canvas" data-pixel-art=""></canvas>
-		<script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@c8207b769940d128480c318e32b5d366a665db5b/highway%20racer%202/Build/game.loader.js"></script>
+  <script>
+      window.fileMergerConfig = {
+        files: [
+          { name: 'game.data.unityweb', parts: 3 },
+          { name: 'game.wasm.unityweb', parts: 1 },
+          { name: 'game.framework.js.unityweb', parts: 1 },
+        ],
+        basePath: 'Build/',
+        debug: true
+      };  
+      </script>
+    <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@ac5cdfc0042aca584e72619375b4aca948a9243c/merge.js"></script>
+		<script src="Build/game.loader.js"></script>
 		<script>
 			var canvas = document.querySelector("#unity-canvas");
 			var config = {
-				dataUrl: "https://rawcdn.githack.com/bubbls/UGS-Assets/c8207b769940d128480c318e32b5d366a665db5b/highway%20racer%202/Build/game.data.unityweb",
-				frameworkUrl: "https://rawcdn.githack.com/bubbls/UGS-Assets/c8207b769940d128480c318e32b5d366a665db5b/highway%20racer%202/Build/game.framework.js.unityweb",
-				codeUrl: "https://rawcdn.githack.com/bubbls/UGS-Assets/c8207b769940d128480c318e32b5d366a665db5b/highway%20racer%202/Build/game.wasm.unityweb",
+				dataUrl: "Build/game.data.unityweb",
+				frameworkUrl: "Build/game.framework.js.unityweb",
+				codeUrl: "Build/game.wasm.unityweb",
 				streamingAssetsUrl: "StreamingAssets",
 				companyName: "FreezeNova",
 				productName: "Crazy Drifter",

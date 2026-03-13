@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 
@@ -6,19 +5,18 @@
 <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
 
 
-<!DOCTYPE html>
+
 
 <html lang="en-us">
-
-<head>
- 
-  <meta charset="utf-8" />
-  <base href="https://rawcdn.githack.com/bubbls/UGS-Assets/1b9e5bc70b632b3329b29a75b34e4d524acf396a/space%20wars%20battleground/">
+  <head>
+    <base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/space%20wars%20battleground/">
+     <head>
+    <meta charset="utf-8" />
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>Unity WebGL Player | Space Wars Battleground</title>
   <link rel="shortcut icon" href="TemplateData/favicon.ico" />
   <link rel="stylesheet" href="TemplateData/style.css" />
-  <link rel="manifest" href="manifest.webmanifest" /> 
+  <link rel="manifest" href="manifest.webmanifest" />
 </head>
 
 <body>
@@ -33,88 +31,215 @@
     <div id="unity-warning"> </div>
   </div>
   <script>
-    window.addEventListener("load", function() {
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("ServiceWorker.js");
+    window.mergedBlobUrls = {};
+    window.assetsReady = false;
+
+    async function mergeSplitFile(fileUrlBase, numParts = 2) {
+      const partUrls = Array.from({ length: numParts }, (_, i) => 
+        `${fileUrlBase}.part${i + 1}`
+      );
+
+      try {
+        const responses = await Promise.all(
+          partUrls.map(url => fetch(url))
+        );
+
+        if (responses.some(r => !r.ok)) {
+          return null;
+        }
+
+        const parts = await Promise.all(
+          responses.map(r => r.arrayBuffer())
+        );
+
+        const combinedBlob = new Blob(parts, {
+          type: 'application/octet-stream'
+        });
+
+        return URL.createObjectURL(combinedBlob);
+      } catch (error) {
+        return null;
       }
+    }
+
+    function setupXHRInterceptor() {
+      if (window.xhrInterceptorInstalled) {
+        return;
+      }
+      
+      const originalOpen = XMLHttpRequest.prototype.open;
+      const originalSend = XMLHttpRequest.prototype.send;
+
+      XMLHttpRequest.prototype.open = function(method, url, ...args) {
+        this._url = url;
+        this._method = method;
+        this._args = args;
+        
+        let finalUrl = url;
+        const decodedUrl = decodeURIComponent(url);
+        
+        for (const [filename, blobUrl] of Object.entries(window.mergedBlobUrls)) {
+          if (url.includes(encodeURIComponent(filename)) || 
+              decodedUrl.includes(filename) || 
+              url.includes(filename)) {
+            finalUrl = blobUrl;
+            break;
+          }
+        }
+        
+        return originalOpen.call(this, method, finalUrl, ...args);
+      };
+
+      XMLHttpRequest.prototype.send = function(...args) {
+        const xhr = this;
+        
+        if (!window.assetsReady) {
+          const checkReady = setInterval(() => {
+            if (window.assetsReady) {
+              clearInterval(checkReady);
+              originalSend.apply(xhr, args);
+            }
+          }, 50);
+          return;
+        }
+        
+        return originalSend.apply(this, args);
+      };
+      
+      window.xhrInterceptorInstalled = true;
+    }
+
+    function setupFetchInterceptor() {
+      if (window.fetchInterceptorInstalled) {
+        return;
+      }
+
+      const originalFetch = window.fetch;
+      window.fetch = function(url, ...args) {
+        let finalUrl = url;
+        const decodedUrl = typeof url === 'string' ? decodeURIComponent(url) : '';
+        
+        for (const [filename, blobUrl] of Object.entries(window.mergedBlobUrls)) {
+          if ((typeof url === 'string' && 
+              (url.includes(encodeURIComponent(filename)) || 
+               decodedUrl.includes(filename) || 
+               url.includes(filename)))) {
+            finalUrl = blobUrl;
+            break;
+          }
+        }
+        
+        return originalFetch.call(this, finalUrl, ...args);
+      };
+
+      window.fetchInterceptorInstalled = true;
+    }
+
+    async function prepareGameAssets() {
+      try {
+        window.assetsReady = false;
+        delete window.xhrInterceptorInstalled;
+        delete window.fetchInterceptorInstalled;
+        window.mergedBlobUrls = {};
+        
+        setupXHRInterceptor();
+        setupFetchInterceptor();
+        
+        const filesToMerge = [
+          { filename: 'Build/SpaceWars_Yandex.data.br', parts: 2 },
+          { filename: 'Build/SpaceWars_Yandex.wasm.br', parts: 2 }
+        ];
+        
+        for (const file of filesToMerge) {
+          const blobUrl = await mergeSplitFile(file.filename, file.parts);
+          if (blobUrl) {
+            window.mergedBlobUrls[file.filename] = blobUrl;
+          }
+        }
+        
+        window.assetsPrepared = true;
+        window.assetsReady = true;
+        
+      } catch (error) {
+        window.assetsPrepared = false;
+        window.assetsReady = true;
+      }
+    }
+
+    prepareGameAssets().then(() => {
+      initUnity();
     });
 
-    var container = document.querySelector("#unity-container");
-    var canvas = document.querySelector("#unity-canvas");
-    var loadingBar = document.querySelector("#unity-loading-bar");
-    var progressBarFull = document.querySelector("#unity-progress-bar-full");
-    var warningBanner = document.querySelector("#unity-warning");
-
-    // Shows a temporary message banner/ribbon for a few seconds, or
-    // a permanent error message on top of the canvas if type=='error'.
-    // If type=='warning', a yellow highlight color is used.
-    // Modify or remove this function to customize the visually presented
-    // way that non-critical warnings and error messages are presented to the
-    // user.
-    function unityShowBanner(msg, type) {
-      function updateBannerVisibility() {
-        warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-      }
-      var div = document.createElement('div');
-      div.innerHTML = msg;
-      warningBanner.appendChild(div);
-      if (type == 'error') div.style = 'background: red; padding: 10px;';
-      else {
-        if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-        setTimeout(function() {
-          warningBanner.removeChild(div);
-          updateBannerVisibility();
-        }, 5000);
-      }
-      updateBannerVisibility();
-    }
-
-    var buildUrl = "Build";
-    var loaderUrl = buildUrl + "/SpaceWars_Yandex.loader.js";
-    var config = {
-      dataUrl: buildUrl + "/SpaceWars_Yandex.data.br",
-      frameworkUrl: buildUrl + "/SpaceWars_Yandex.framework.js.br",
-      codeUrl: buildUrl + "/SpaceWars_Yandex.wasm.br",
-      streamingAssetsUrl: "StreamingAssets",
-      companyName: "GoGoMan",
-      productName: "Space Wars Battleground",
-      productVersion: "0.1",
-      showBanner: unityShowBanner,
-    };
-
-    // By default Unity keeps WebGL canvas render target size matched with
-    // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-    // Set this to false if you want to decouple this synchronization from
-    // happening inside the engine, and you would instead like to size up
-    // the canvas DOM size and WebGL render target sizes yourself.
-    // config.matchWebGLToCanvasSize = false;
-
-    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-      // Mobile device style: fill the whole browser client area with the game canvas:
-      var meta = document.createElement('meta');
-      meta.name = 'viewport';
-      meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-      document.getElementsByTagName('head')[0].appendChild(meta);
-      config.devicePixelRatio = 1;
-      window.devicePixelRatio = 1;
-    }
-
-    canvas.style.background = "url('" + buildUrl + "SpaceWars_Yandex.jpg.br') center / cover";
-    loadingBar.style.display = "block";
-
-    var script = document.createElement("script");
-    script.src = loaderUrl;
-    script.onload = () => {
-      createUnityInstance(canvas, config, (progress) => {
-        progressBarFull.style.width = 100 * progress + "%";
-      }).then((unityInstance) => {
-        window.unityInstance = unityInstance;
-        loadingBar.style.display = "none";
-      }).catch((message) => {
-        alert(message);
+    function initUnity() {
+      window.addEventListener("load", function() {
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("ServiceWorker.js");
+        }
       });
-    };
-    document.body.appendChild(script);
+
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var warningBanner = document.querySelector("#unity-warning");
+
+      function unityShowBanner(msg, type) {
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/SpaceWars_Yandex.loader.js";
+      var config = {
+        dataUrl: buildUrl + "/SpaceWars_Yandex.data.br",
+        frameworkUrl: buildUrl + "/SpaceWars_Yandex.framework.js",
+        codeUrl: buildUrl + "/SpaceWars_Yandex.wasm.br",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "GoGoMan",
+        productName: "Space Wars Battleground",
+        productVersion: "0.1",
+        showBanner: unityShowBanner,
+      };
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+        config.devicePixelRatio = 1;
+        window.devicePixelRatio = 1;
+      }
+
+      canvas.style.background = "url('" + buildUrl + "/SpaceWars_Yandex.jpg.br') center / cover";
+      loadingBar.style.display = "block";
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          progressBarFull.style.width = 100 * progress + "%";
+        }).then((unityInstance) => {
+          window.unityInstance = unityInstance;
+          loadingBar.style.display = "none";
+        }).catch((message) => {
+          alert(message);
+        });
+      };
+      document.body.appendChild(script);
+    }
   </script>
   <script src="/sdk.js"></script>
   <script type="text/javascript">
@@ -148,9 +273,7 @@
           sdk.adv.showFullscreenAdv({
             callbacks: {}
           });
-          //sdk.adv.showBannerAdv();
         } else {
-          //sdk.adv.hideBannerAdv();
         }
       });
 
@@ -175,7 +298,6 @@
       console.log(isCom);
 
       window.unityInstance.SendMessage('SDKPlatforms', 'IsCom', isCom);
-      //checkLanguage();
     }
 
     function purchaseComplete(id) {
@@ -219,10 +341,8 @@
 
     function consumeSavePurchase() {
       console.log("Consume Saved Purchase");
-      //payments.consumePurchase(lastPurchased);
       payments.getPurchases().then(purchases => purchases.forEach(consumeCurrentPurchase));
     }
-
 
     function buy(id_buy) {
       if (payments != null) {
@@ -230,7 +350,6 @@
           id: id_buy
         }).then(purchase => {
           window.unityInstance.SendMessage('SDKPlatforms', 'PurchasesComplete', id_buy);
-          //payments.consumePurchase(purchase.purchaseToken);
           plsSendGoal(id_buy);
         });
       }
@@ -241,9 +360,7 @@
       checkCom();
       if (payments != null) {
         initPurchasing();
-        //checkShop();
       }
-      //checkLanguage();
     }
 
     function checkLanguage() {
@@ -319,14 +436,13 @@
           console.log('No Save');
         });
       }
-
     }
   </script>
   <script>
     function saveCloud(dataSave, counterSave) {
       console.log("Saving....... ");
       if (player != null) {
-        player.getData(["saveSpaceWarsBatt", "counterSave4"]).then(data => { 
+        player.getData(["saveSpaceWarsBatt", "counterSave4"]).then(data => {
           if (data.counterSave4) {
             console.log('Counter ' + data.counterSave4 + " " + counterSave);
             if (data.counterSave4 < counterSave) {
@@ -418,6 +534,7 @@
       }
       k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
     })
+    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
     ym(96859165, "init", {
       clickmap: true,
@@ -425,6 +542,9 @@
       accurateTrackBounce: true
     });
   </script>
+  <noscript>
+    <div><img src="https://mc.yandex.ru/watch/96859165" style="position:absolute; left:-9999px;" alt="" /></div>
+  </noscript>
   <!-- /Yandex.Metrika counter -->
 </body>
 

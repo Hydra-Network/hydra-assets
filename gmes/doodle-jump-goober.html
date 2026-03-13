@@ -1,11 +1,4 @@
-
-
-<!-- Ultimate Game Stash file--> 
-<!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
-
-
-
-<html lang="en"><head><script type="text/javascript" async="" src="https://www.googletagmanager.com/gtag/js?id=G-F32JC4N3VY&amp;cx=c&amp;_slc=1"></script><script src="https://s0.2mdn.net/instream/video/client.js" async="" type="text/javascript"></script><script async="" src="https://www.google-analytics.com/analytics.js"></script><script type="text/javascript" id="analytics" async="" src="https://cdn.jsdelivr.net/gh/st39/sdk@main/ga.js"></script><script type="text/javascript" async="" src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script><script id="gamemonetize-sdk" src="https://cdn.jsdelivr.net/gh/st39/sdk@main/sdkjs.js"></script><script src="//www.google.com/jsapi"></script><script>window.parent.maeExportApis_();</script>
+<html lang="en"><head><script src="//www.google.com/jsapi"></script><script>window.parent.maeExportApis_();</script>
 
 
   <meta charset="UTF-8">
@@ -114,26 +107,7 @@ h3 a {color: #5a5816}
 .info .key.left {background-position: -92px -621px;}
 .info .key.right {background-position: -92px -641px;}
 </style>
-<style type="text/css">#button {
-  display:none;
-}
-.imgb_vis {
-  animation: imgb-animation 7s linear;
-}
-@keyframes imgb-animation {
-  10% {
-    transform: translateX(0);
-  }
-  20% {
-    transform: translateX(100px);
-  }
-  90% {
-    transform: translateX(100px);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}</style><meta http-equiv="origin-trial" content="A9AxgGSwmnfgzzkyJHILUr3H8nJ/3D+57oAsL4DBt4USlng4jZ0weq+fZtHC/Qwwn6gd4QSa5DzT3OBif+kXVA0AAAB4eyJvcmlnaW4iOiJodHRwczovL2ltYXNkay5nb29nbGVhcGlzLmNvbTo0NDMiLCJmZWF0dXJlIjoiUHJpdmFjeVNhbmRib3hBZHNBUElzIiwiZXhwaXJ5IjoxNjk1MTY3OTk5LCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="AlK2UR5SkAlj8jjdEc9p3F3xuFYlF6LYjAML3EOqw1g26eCwWPjdmecULvBH5MVPoqKYrOfPhYVL71xAXI1IBQoAAAB8eyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="></head>
+</head>
 <body>
 
 
@@ -147,7 +121,7 @@ h3 a {color: #5a5816}
 			Aww, your browser doesn't support HTML5!
 		</canvas>
 
-		<div id="mainMenu">
+		<div id="mainMenu" style="z-index: -1;">
 			<h1>doodle jump</h1>
 
 			<p class="info">
@@ -159,22 +133,22 @@ h3 a {color: #5a5816}
 			<a class="button" href="javascript:init()">Play</a>
 		</div>
 		
-		<div id="gameOverMenu">
+		<div id="gameOverMenu" style="z-index: 1; visibility: visible;">
 			<h1>game over!</h1>
-			<h3 id="go_score">you scored 0 points</h3>
+			<h3 id="go_score">You scored 114 points!</h3>
 
 			<a class="button" href="javascript:reset()">Restart</a>
-			<a id="tweetBtn" target="_blank" class="button tweet" href="#">Tweet score</a>
+			<a id="tweetBtn" target="_blank" class="button tweet" href="https://twitter.com/share?url=http://is.gd/PnFFzu&amp;text=I just scored 114 points in the HTML5 Doodle Jump game!&amp;count=horiztonal&amp;via=cssdeck&amp;related=solitarydesigns">Tweet score</a>
 
-			<a id="fbBtn" target="_blank" class="button fb" href="#">Post on FB</a>
+			<a id="fbBtn" target="_blank" class="button fb" href="https://facebook.com/sharer.php?s=100&amp;p[url]=http://cssdeck.com/labs/html5-doodle-jump/8&amp;p[title]=I just scored 114 points in the HTML5 Doodle Jump game!&amp;p[summary]=Can you beat me in this awesome recreation of Doodle Jump created in HTML5?">Post on FB</a>
 		</div>
 		
 		
 		
 		<img id="sprite" src="https://lh6.googleusercontent.com/TrOzetdBcu82PPCF3bK84m2NkcIuaiG8T9d0MXpt3v_mMeGi0nEbGB2hQhO09ME5iootOVS1_oN3PT3c28htIecdpodcx9i_oBU8dTLiVkPPgPwQ63pyIwlVetTSkeZZmqoS-6xxQTeZF-6bgiqzGTo">
 
-		<div id="scoreBoard">
-			<p id="score">0</p>
+		<div id="scoreBoard" style="z-index: -1;">
+			<p id="score">114</p>
 		</div>
 
 	</div>
@@ -638,7 +612,7 @@ function init() {
 			tweet.href='https://twitter.com/share?url=http://is.gd/PnFFzu&text=I just scored ' +score+ ' points in the HTML5 Doodle Jump game!&count=horiztonal&via=cssdeck&related=solitarydesigns';
 		
 			var facebook = document.getElementById("fbBtn");
-			facebook.href='8&p[title]=I just scored ' +score+ ' points in the HTML5 Doodle Jump game!&p[summary]=Can you beat me in this awesome recreation of Doodle Jump created in HTML5?';
+			facebook.href='https://facebook.com/sharer.php?s=100&p[url]=http://cssdeck.com/labs/html5-doodle-jump/8&p[title]=I just scored ' +score+ ' points in the HTML5 Doodle Jump game!&p[summary]=Can you beat me in this awesome recreation of Doodle Jump created in HTML5?';
 
 		}
 	}
@@ -818,57 +792,6 @@ menuLoop = function() {
 
 menuLoop();
 
-</script><script src="https://cdn.jsdelivr.net/gh/st39/sdk@main/api.js"></script>
-
-
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
-<script type="text/javascript">
-    window.SDK_OPTIONS = {
-        gameId: "r2tzpy9cgrn2u4xgzc9z0zbtvxm16mby",
-        onEvent: function(a) {
-            switch (a.name) {
-                case "SDK_GAME_PAUSE":
-                    // pause game logic / mute audio
-                    break;
-                case "SDK_GAME_START":
-                    // advertisement done, resume game logic and unmute audio
-                    break;
-                case "SDK_READY":
-                    // when sdk is ready
-                    break;
-            }
-        }
-    };
-    (function(a, b, c) {
-        var d = a.getElementsByTagName(b)[0];
-        a.getElementById(c) || (a = a.createElement(b), a.id = c, a.src = "https://cdn.jsdelivr.net/gh/st39/sdk@main/sdkjs.js", d.parentNode.insertBefore(a, d))
-    })(document, "script", "gamemonetize-sdk");
 </script>
 
-<script type="text/javascript">
-    let isAdShown = false;
-
-    function onClick(e) {
-        if (!isAdShown && typeof sdk !== 'undefined' && typeof sdk.showBanner === 'function') {
-            sdk.showBanner(); 
-            isAdShown = true; 
-        }
-
-        window.removeEventListener("click", onClick); 
-        init(); 
-    }
-
-    window.addEventListener("click", onClick);
-</script>
-
-
-
-
-
-
-
-
-<div id="imaContainer" style="position: absolute; z-index: 10000; top: 0px; left: 0px; width: 100%; height: 100%; background-color: rgb(0, 0, 0); visibility: hidden; overflow: hidden;"><video id="imaVideo"></video></div><div id="imaContainer_new" style="position: absolute; z-index: 10000; top: 0px; left: 0px; width: 100%; height: 100%; background-color: rgb(0, 0, 0); visibility: hidden; overflow: hidden;"><video2 id="imaVideo2"></video2></div><div id="sdk__advertisement" style="position: fixed; z-index: 0; top: 0px; left: 0px; width: 100%; height: 100%; transform: translateX(-9999px); background-color: rgba(0, 0, 0, 0.8); opacity: 0; transition: opacity 300ms cubic-bezier(0.55, 0, 0.1, 1);"><div id="sdk__advertisement_slot" style="position: absolute; background-color: rgb(0, 0, 0); top: 0px; left: 0px; width: 356px; height: 838px;"><div style="position: absolute;"><div style="display: none;"><lima-video webkit-playsinline="true" playsinline="true" style="background-color: rgb(0, 0, 0); height: 100%; width: 100%; position: absolute; left: 0px; top: 0px;"></lima-video><div style="position: absolute; width: 100%; height: 100%; left: 0px; top: 0px;"></div></div><div style="display: none;"><lima-video webkit-playsinline="true" playsinline="true" style="background-color: rgb(0, 0, 0); height: 100%; width: 100%; position: absolute; left: 0px; top: 0px;"></lima-video><div style="position: absolute; width: 100%; height: 100%; left: 0px; top: 0px;"></div></div><iframe src="" allowfullscreen="" allow="autoplay;attribution-reporting" id="goog_1095445838" title="Advertisement" style="border: 0px; opacity: 0; margin: 0px; padding: 0px; position: relative; color-scheme: light;"></iframe><iframe title="Advertisement" style="display: none;"></iframe></div></div></div><iframe name="google_video_inner_static_iframe" id="google_video_inner_static_iframe" src="about:blank" style="height: 0px; width: 0px; display:none"></iframe></body></html>
+</body></html>
