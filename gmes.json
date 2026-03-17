@@ -511,6 +511,16 @@
 		"thumb": "thumbs/bad-ice-cream.avif"
 	},
 	{
+		"file_name": "bad-ice-cream-2.html",
+		"title": "Bad Ice Cream 2",
+		"thumb": "thumbs/bad-ice-cream-2.avif"
+	},
+	{
+		"file_name": "bad-ice-cream-3.html",
+		"title": "Bad Ice Cream 3",
+		"thumb": "thumbs/bad-ice-cream-3.avif"
+	},
+	{
 		"file_name": "bad-monday-simulator.html",
 		"title": "Bad Monday Simulator",
 		"thumb": "thumbs/bad-monday-simulator.avif"
@@ -572,13 +582,13 @@
 		"thumb": "thumbs/bandit-gunslingers.avif"
 	},
 	{
-		"file_name": "banjo-kazoo-ie.html",
-		"title": "Banjo Kazoo Ie",
+		"file_name": "banjo-kazooie.html",
+		"title": "Banjo KazooIe",
 		"thumb": "thumbs/banjo-kazoo-ie.avif"
 	},
 	{
-		"file_name": "banjo-too-ie.html",
-		"title": "Banjo Too Ie",
+		"file_name": "banjo-tooie.html",
+		"title": "Banjo Tooie",
 		"thumb": "thumbs/banjo-too-ie.avif"
 	},
 	{
@@ -8268,5 +8278,10 @@
 		"file_name": "gun-knight.html",
 		"title": "Gun Knight",
 		"thumb": "thumbs/gun-knight.avif"
+	},
+	{
+		"file_name": "caseohs-basics-in-eating-and-fast-food.html",
+		"title": "CaseOhs Basics in Eating and Fast Food",
+		"thumb": "thumbs/caseoh-basics.avif"
 	}
 ]
