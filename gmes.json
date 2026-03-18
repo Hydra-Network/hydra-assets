@@ -1735,6 +1735,11 @@
 		"thumb": "thumbs/crash-bandicoot-2.avif"
 	},
 	{
+		"file_name": "crash-bandicoot-3.html",
+		"title": "Crash Bandicoot 3",
+		"thumb": "thumbs/crash-bandicoot-3.avif"
+	},
+	{
 		"file_name": "crash-team-racing.html",
 		"title": "Crash Team Racing",
 		"thumb": "thumbs/crash-team-racing.avif"
@@ -4190,7 +4195,7 @@
 	},
 	{
 		"title": "Little Alchemy 2",
-		"file_name": "little-alchemy-2/index.html",
+		"file_name": "little-alchemy-2.html",
 		"frame": "true",
 		"thumb": "thumbs/little-alchemy-2.avif"
 	},

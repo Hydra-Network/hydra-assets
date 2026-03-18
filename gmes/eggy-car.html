@@ -1,244 +1,174 @@
-<!-- Ultimate Game Stash file-->
+<!DOCTYPE html>
+
+
+<!-- Ultimate Game Stash file--> 
 <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
 
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-	<base href="https://cdn.jsdelivr.net/gh/Stinkalistic/UGS@main/MISC/egg/">
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
-		<title>Egg</title>
-		<style>
-html, body, #canvas {
-	margin: 0;
-	padding: 0;
-	border: 0;
-}
 
-body {
-	color: white;
-	background-color: black;
-	overflow: hidden;
-	touch-action: none;
-}
 
-#canvas {
-	display: block;
-}
+<html>
 
-#canvas:focus {
-	outline: none;
-}
+<head>
+  <base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/eggy%20car/"> 
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>Eggy Car</title>
+  <!-- Standardised web app manifest -->
+  <link rel="manifest" href="appmanifest.json" />
 
-#status, #status-splash {
-    position: absolute;
-    left: 0;
-    right: 0;
-}
+  <!-- Allow fullscreen mode on iOS devices. (These are Apple specific meta tags.) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <link rel="apple-touch-icon" sizes="256x256" href="icon-256.png" />
+  <meta name="HandheldFriendly" content="true" />
 
-#status-progress {
-    position: absolute;
-}
+  <meta property="og:title" content="Eggy Car" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="./intantgames/banners/eggycar.jpg" />
+  <meta property="og:site_name" content="Eggy Car" />
+  <meta property="og:description" content="Eggy Car is a hill climbing car game with a egg on top of it. There is only one important task, DON'T DROP THE EGG. Drive carefully and cover maximum distance. It is not easy as well. Good Luck! ." />
 
-#status, #status-splash {
-	top: 0;
-	bottom: 0;
-}
+  <!-- Chrome for Android web app tags -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <link rel="shortcut icon" sizes="256x256" href="icon-256.png" />
 
-#status {
-	background-color: black;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	visibility: hidden;
-}
+  <!-- All margins and padding must be zero for the canvas to fill the screen. -->
+  <style type="text/css">
+    * {
+      padding: 0;
+      margin: 0;
+    }
 
-#status-splash {
-	max-height: 100%;
-	max-width: 100%;
-	margin: auto;
-}
+    html,
+    body {
+      background: #000;
+      color: #fff;
+      overflow: hidden;
+      touch-action: none;
+      -ms-touch-action: none;
+    }
 
-#status-splash.show-image--false {
-	display: none;
-}
+    canvas {
+      touch-action-delay: none;
+      touch-action: none;
+      -ms-touch-action: none;
+    }
 
-#status-splash.fullsize--true {
-	height: 100%;
-	width: 100%;
-	object-fit: contain;
-}
+    @font-face {
+      font-family: Changa One;
+      src: url(changaone_regular.ttf.ttf);
+    }
+  </style>
 
-#status-splash.use-filter--false {
-	image-rendering: pixelated;
-}
 
-#status-progress, #status-notice {
-	display: none;
-}
+</head>
 
-#status-progress {
-	width: 650px;
-	height: 16px;
-	background-color: #000000;
-	border: 8px solid #ffffff;
-	padding: 8px;
-	border-radius: 0px;
-	visibility: visible;
-}
+<body>
+  <script>
+  (function() {
+    const originalImage = window.Image;
+    
+    window.Image = function() {
+      const img = new originalImage();
+      img.crossOrigin = "anonymous";
+      return img;
+    };
+    
+    const originalCreateElement = document.createElement.bind(document);
+    document.createElement = function(tagName) {
+      const element = originalCreateElement(tagName);
+      if (tagName.toLowerCase() === 'img') {
+        element.crossOrigin = "anonymous";
+      }
+      return element;
+    };
+  })();
+</script>
+  <div id="fb-root"></div>
 
-#status-progress::-webkit-progress-value {
-    background-color: #ffffff;
-}
+  <script>
+    (function() {
+      // Check for running exported on file protocol
+      if (window.location.protocol.substr(0, 4) === "file") {
+        alert("Exported games won't work until you upload them. (When running on the file:/// protocol, browsers block many features from working for security reasons.)");
+      }
+    })();
+  </script>
 
-#status-progress::-moz-progress-bar {
-    background-color: #ffffff;
-}
+  <!-- The canvas must be inside a div called c2canvasdiv -->
+  <div id="c2canvasdiv">
 
-#status-notice {
-	background-color: #5b3943;
-	border-radius: 0.5rem;
-	border: 1px solid #9b3943;
-	color: #e0e0e0;
-	font-family: 'Noto Sans', 'Droid Sans', Arial, sans-serif;
-	line-height: 1.3;
-	margin: 0 2rem;
-	overflow: hidden;
-	padding: 1rem;
-	text-align: center;
-	z-index: 1;
-}
-		</style>
-		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
-<link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
+    <!-- The canvas the project will render to.  If you change its ID, don't forget to change the
+		ID the runtime looks for in the jQuery events above (ready() and cr_sizeCanvas()). -->
+    <canvas id="c2canvas" width="1280" height="720">
+      <!-- This text is displayed if the visitor's browser does not support HTML5.
+			You can change it, but it is a good idea to link to a description of a browser
+			and provide some links to download some popular HTML5-compatible browsers. -->
+      <h1>Your browser does not appear to support HTML5. Try upgrading your browser to the latest version. <a href="http://www.whatbrowser.org">What is a browser?</a>
+        <br /><br /><a href="http://www.microsoft.com/windows/internet-explorer/default.aspx">Microsoft Internet Explorer</a><br />
+        <a href="http://www.mozilla.com/firefox/">Mozilla Firefox</a><br />
+        <a href="https://www.google.com/chrome/">Google Chrome</a><br />
+        <a href="http://www.apple.com/safari/download/">Apple Safari</a>
+      </h1>
+    </canvas>
 
-	</head>
-	<body>
-		<canvas id="canvas">
-			Your browser does not support the canvas tag.
-		</canvas>
+  </div>
 
-		<noscript>
-			Your browser does not support JavaScript.
-		</noscript>
+  <!-- Pages load faster with scripts at the bottom -->
 
-		<div id="status">
-			<img id="status-splash" class="show-image--false fullsize--true use-filter--true" src="index.png" alt="">
-			<progress id="status-progress"></progress>
-			<div id="status-notice"></div>
-		</div>
-		
-		<script src="main.js"></script>
-		<script src="index.js"></script>
-		<script>
-window.godotRunStart=function(){
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":190970224,"index.wasm":36160334},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
-const GODOT_THREADS_ENABLED = false;
-const engine = new Engine(GODOT_CONFIG);
+  <!-- Construct 2 exported games require jQuery. -->
+  <script src="jquery-2.1.1.min.js"></script>
 
-(function () {
-	const statusOverlay = document.getElementById('status');
-	const statusProgress = document.getElementById('status-progress');
-	const statusNotice = document.getElementById('status-notice');
 
-	let initializing = true;
-	let statusMode = '';
 
-	function setStatusMode(mode) {
-		if (statusMode === mode || !initializing) {
-			return;
-		}
-		if (mode === 'hidden') {
-			statusOverlay.remove();
-			initializing = false;
-			return;
-		}
-		statusOverlay.style.visibility = 'visible';
-		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
-		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
-		statusMode = mode;
-	}
+  <!-- The runtime script.  You can rename it, but don't forget to rename the reference here as well.
+    This file will have been minified and obfuscated if you enabled "Minify script" during export. -->
+  <script src="c5runtime.js"></script>
 
-	function setStatusNotice(text) {
-		while (statusNotice.lastChild) {
-			statusNotice.removeChild(statusNotice.lastChild);
-		}
-		const lines = text.split('\n');
-		lines.forEach((line) => {
-			statusNotice.appendChild(document.createTextNode(line));
-			statusNotice.appendChild(document.createElement('br'));
-		});
-	}
+  <script>
+    // Start the Construct 2 project running on window load.
+    jQuery(document).ready(function() {
+      // Create new runtime using the c2canvas
+      cr_createRuntime("c2canvas");
+    });
 
-	function displayFailureNotice(err) {
-		console.error(err);
-		if (err instanceof Error) {
-			setStatusNotice(err.message);
-		} else if (typeof err === 'string') {
-			setStatusNotice(err);
-		} else {
-			setStatusNotice('An unknown error occurred.');
-		}
-		setStatusMode('notice');
-		initializing = false;
-	}
+    // Pause and resume on page becoming visible/invisible
+    function onVisibilityChanged() {
+      if (document.hidden || document.mozHidden || document.webkitHidden || document.msHidden)
+        cr_setSuspended(true);
+      else
+        cr_setSuspended(false);
+    };
 
-	const missing = Engine.getMissingFeatures({
-		threads: GODOT_THREADS_ENABLED,
-	});
+    document.addEventListener("visibilitychange", onVisibilityChanged, false);
+    document.addEventListener("mozvisibilitychange", onVisibilityChanged, false);
+    document.addEventListener("webkitvisibilitychange", onVisibilityChanged, false);
+    document.addEventListener("msvisibilitychange", onVisibilityChanged, false);
 
-	if (missing.length !== 0) {
-		if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
-			let serviceWorkerRegistrationPromise;
-			try {
-				serviceWorkerRegistrationPromise = navigator.serviceWorker.getRegistration();
-			} catch (err) {
-				serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
-			}
-			// There's a chance that installing the service worker would fix the issue
-			Promise.race([
-				serviceWorkerRegistrationPromise.then((registration) => {
-					if (registration != null) {
-						return Promise.reject(new Error('Service worker already exists.'));
-					}
-					return registration;
-				}).then(() => engine.installServiceWorker()),
-				// For some reason, `getRegistration()` can stall
-				new Promise((resolve) => {
-					setTimeout(() => resolve(), 2000);
-				}),
-			]).then(() => {
-				// Reload if there was no error.
-				window.location.reload();
-			}).catch((err) => {
-				console.error('Error while registering service worker:', err);
-			});
-		} else {
-			// Display the message as usual
-			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
-			displayFailureNotice(missingMsg + missing.join('\n'));
-		}
-	} else {
-		setStatusMode('progress');
-		engine.startGame({
-			'onProgress': function (current, total) {
-				if (current > 0 && total > 0) {
-					statusProgress.value = current;
-					statusProgress.max = total;
-				} else {
-					statusProgress.removeAttribute('value');
-					statusProgress.removeAttribute('max');
-				}
-			},
-		}).then(() => {
-			setStatusMode('hidden');
-		}, displayFailureNotice);
-	}
-}());
-};
-		</script>
-	</body>
+    function OnRegisterSWError(e) {
+      console.warn("Failed to register service worker: ", e);
+    };
+
+    // Runtime calls this global method when ready to start caching (i.e. after startup).
+    // This registers the service worker which caches resources for offline support.
+    window.C2_RegisterSW = function C2_RegisterSW() {
+      if (!navigator.serviceWorker)
+        return; // no SW support, ignore call
+
+      try {
+        navigator.serviceWorker.register("sw.js", {
+            scope: "./"
+          })
+          .then(function(reg) {
+            console.log("Registered service worker on " + reg.scope);
+          })
+          .catch(OnRegisterSWError);
+      } catch (e) {
+        OnRegisterSWError(e);
+      }
+    };
+  </script>
+</body>
+
 </html>
-
-

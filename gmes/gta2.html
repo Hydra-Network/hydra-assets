@@ -1,4 +1,3 @@
-
 <html>
 
 
@@ -81,20 +80,17 @@
                 document.getElementById("game").style.display = "block";
                 document.getElementById("startButton").style.display = "none";
                 EJS_player = "#game";
-                EJS_core = "psx";
+                EJS_core = "gba";
                 EJS_color = "#000000";
                 EJS_startOnLoaded = true;
                 EJS_pathtodata = "https://cdn.jsdelivr.net/gh/a456pur/seraph@81f551ca0aa8e3d6018d32d8ac5904ac9bc78f76/storage/emulatorjs/data";
-                EJS_gameUrl = "https://bbcdn.githack.com/helloitadmin/smart/raw/main/Grand%20Theft%20Auto%20(USA).zip";
-                loadGame();  
+                EJS_gameUrl = "https://cdn.jsdelivr.net/gh/bubbls/UGS-file-encryption@7b7d4dd3051399442aad5ffdc59965324fe241cf/Grand%20Theft%20Auto%202%20(USA).zip";
+                loadGame();
             }
             document.getElementById("startButton").addEventListener("click", startGame);
             function loadGame() {
                 var script = document.createElement("script");
                 script.src = "https://cdn.jsdelivr.net/gh/a456pur/seraph@81f551ca0aa8e3d6018d32d8ac5904ac9bc78f76/storage/emulatorjs/data/loader.js";
-                document.body.appendChild(script);
-		var script = document.createElement("script");
-                script.src = "https://cdn.jsdelivr.net/gh/a456pur/seraph@ae2fcc6d6a9cd051654fcc0519080db1f79cf2a7/storage/js/cloak.js";
                 document.body.appendChild(script);
             }
 	</script>
